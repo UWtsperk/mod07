@@ -53,7 +53,7 @@ class Person:
         if value.isalpha() or value == "":  # is character or empty string
             self.__first_name = value
         else:
-            raise ValueError("The last name should not contain numbers.")
+            raise ValueError("The first name should not contain numbers.")
 
     @property
     def last_name(self):
