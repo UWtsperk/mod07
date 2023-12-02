@@ -26,7 +26,7 @@ FILE_NAME: str = "Enrollments.json"
 menu_choice: str  # Hold the choice made by the user.
 students: list = []  # a table of student data
 file = _io.TextIOWrapper  # the default item type for this object.
-
+num_records: int = 0
 
 class Person:
     """
@@ -53,7 +53,7 @@ class Person:
         if value.isalpha() or value == "":  # is character or empty string
             self.__first_name = value
         else:
-            raise ValueError("The first name should not contain numbers.")
+            raise ValueError("The last name should not contain numbers.")
 
     @property
     def last_name(self):
@@ -117,6 +117,7 @@ class FileProcessor:
 
         ChangeLog: (Who, When, What)
         TPerkins, 11/23/2023, Created for Assignment06
+        TPerkins, 11/25/2023, Modified to change for student object.
         :param file_name: Name of file to be read.
         :param student_data: List of student data.
         :return: list
@@ -152,6 +153,7 @@ class FileProcessor:
 
         ChangeLog: (Who, When, What)
         TPerkins, 11/23/2023, Created for Assignment06
+        TPerkins, 11/25/2023, Modified for student object
         :param file_name: The file name to be written to
         :param student_data: The list of data to write
         :return: None
@@ -258,9 +260,11 @@ class IO:
 
         ChangeLog: (Who, When, What)
         TPerkins, 11/23/2023, Created for Assignment06
+        TPerkins, 11/25/2023, Modified for student object
 
         :return: list
         """
+        dup_flag: bool = False
 
         try:
             student = Student()
@@ -273,9 +277,15 @@ class IO:
             student.course_name = input("Please enter the name of the course: ")
             if len(student.course_name) == 0:
                 raise ValueError("The course name should not be blank.")
-            student_data.append(student)
-            print(f"You have registered {student.first_name} {student.last_name} for {student.course_name}.")
-
+            for student_rec in student_data:
+                if student.first_name == student_rec.first_name and\
+                        student.last_name == student_rec.last_name and\
+                        student.course_name == student_rec.course_name:
+                    dup_flag = True
+                    raise ValueError("Input is duplicate to an existing record.")
+            if not dup_flag:
+                student_data.append(student)
+                print(f"You have registered {student.first_name} {student.last_name} for {student.course_name}.")
         except ValueError as e:
             IO.output_error_messages(ValueError.__doc__, e)
         except Exception as e:
